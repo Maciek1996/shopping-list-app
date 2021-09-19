@@ -10,7 +10,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { GlobalProvider } from '../context/GlobalState';
 
-axios.defaults.baseURL = 'http://ShoppingList.somee.com/api'; //'http://localhost:51096/api'; 
+axios.defaults.baseURL = 'https://ShoppingList.somee.com/api'; //'http://localhost:51096/api'; 
 function App() 
 {
   const[productList, setProductList] = useState([]);
