@@ -1,0 +1,32 @@
+.card {
+    margin-bottom: 10px;
+}
+
+
+.input-right-group
+{
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    float: right;
+}
+
+.input-left-group
+{
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    float: left;
+}
+
+.input-right-group span
+{
+    background-color: #fff;
+    padding: 0;
+}
+
+.checkbox-lg {
+    width: 2.3rem;
+    height: 2.3rem;
+  }
+  
