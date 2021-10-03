@@ -6,7 +6,7 @@ function PreviousListItem({data})
     return(
         <Card>
         <Accordion.Toggle as={Card.Header} eventKey={data.id}>
-            {data && data.creationDate}
+            {'Lista z dnia: ' + data.creationDate}
           </Accordion.Toggle>
             <Accordion.Collapse eventKey={data.id}>
            <Card.Body>

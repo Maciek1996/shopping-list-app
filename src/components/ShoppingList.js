@@ -4,19 +4,19 @@ import ShoppingListItem from './ShoppingListItem';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { GlobalContext } from '../context/GlobalState';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteFromList, setList } from '../actions/shoppinglistActions';
 
 const ShoppingList = ()  =>
 {
-    //const {getProductsList, deleteProductFromList } = useRequestRest();
-    const [items, setItems] = useState([]);
     const [error, setError] = useState(undefined);
     const [loading, setLoading] = useState(true);
-    const history = useHistory();
 
-    const{list, getList, deleteFromList} = useContext(GlobalContext);
-
+    //const{list, getList, deleteFromList} = useContext(GlobalContext);
+    const list = useSelector(state => state.list);
+    const dispatch = useDispatch();
     useEffect(() => {
-        axios.request({url: '/list', method: 'get'}).then(response => {getList(response.data)}).catch(err => {setError(err)}).finally(()=>{setLoading(false)});
+        axios.request({url: '/list', method: 'get'}).then(response => {dispatch(setList(response.data))}).catch(err => {setError(err)}).finally(()=>{setLoading(false)});
 
     },[]);
 
@@ -33,14 +33,13 @@ const ShoppingList = ()  =>
                 }
                 setLoading(true);
                 const newList = await axios.get('/list').catch(err => setError(err)).finally(()=>{setLoading(false)});
-                getList([]);
-                getList(newList.data);//[{id: '1234', name: 'test', description: 'test'}]);
-                window.confirm("Utworzono nową listę zakupów.")
-                //history.push('list');
+                dispatch(setList([]));
+                dispatch(setList(newList.data));
+                window.alert("Utworzono nową listę zakupów.")
             }
             if(!response)
             {
-                window.confirm("Lista jest pusta. Nie można stworzyć nowej listy.");
+                window.alert("Lista jest pusta. Nie można stworzyć nowej listy.");
             }
             
         }
@@ -50,7 +49,7 @@ const ShoppingList = ()  =>
         if(window.confirm("Czy chcesz usunąć produkt z listy zakupów?"))
         {
             axios.request({url: `/list/${id}`, method: 'delete'})
-            deleteFromList(id);
+            dispatch(deleteFromList(id));
         }
     }
 

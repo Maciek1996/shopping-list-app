@@ -1,22 +1,22 @@
 import axios from "axios";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Jumbotron, Row, InputGroup, FormControl, Button ,Col} from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { GlobalContext } from "../context/GlobalState";
 import ProductListItem from "./ProductListItem";
+import {setProducts, deleteProduct} from '../actions/productActions';
 
 function ProductsList()
 {
-    //const {getProducts} = useRequestRest();
-    //const [products, setProducts] = useState([]);
     const [error,setError] = useState(undefined);
-    const [search, setSearch] = useState(undefined);
+    const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
     const history = useHistory();
-    //const {response, error} = useAxios({url:'/products', method: 'get'});
-    const{products, getProducts, deleteProduct} = useContext(GlobalContext);
+    const products = useSelector(state => state.products);
+    const dispatch = useDispatch();
     useEffect(() => {
-        axios.request({url: '/products', method: 'get'}).then(response => { getProducts(response.data);}).catch(err => {setError(err)}).finally(()=>{setLoading(false)});
+        axios.request({url: '/products', method: 'get'}).then(response => {dispatch(setProducts(response.data))}).catch(err => {setError(err)}).finally(()=>{setLoading(false)});
     },[])
 
     const handleRemove = (id) =>
@@ -24,7 +24,7 @@ function ProductsList()
         if(window.confirm("Czy chcesz usunąć produkt z listy?"))
         {
             axios.request({url: `/products/${id}`, method: 'delete'});
-            deleteProduct(id);
+            dispatch(deleteProduct(id));
         }
 
     }
@@ -32,12 +32,22 @@ function ProductsList()
     const handleSearch = (e) =>
     {
         setLoading(true);
-        axios.request({url: `/products?search=${search}`, method: 'get'}).then(response => {getProducts(response.data)}).catch(err => {setError(err)}).finally(()=>{setLoading(false)});
+        axios.request({url: `/products?search=${search}`, method: 'get'}).then(response => {dispatch(setProducts(response.data))}).catch(err => {setError(err)}).finally(()=>{setLoading(false)});
     }
 
     const handleAddNewProduct = () =>
     {
         history.push(`/products/create`);
+    }
+
+    const onChangeSearch = (event) =>
+    {
+        setSearch(event.target.value);
+        if (!event.target.value)
+        {
+            setLoading(true);
+            axios.request({url: '/products', method: 'get'}).then(response => {dispatch(setProducts(response.data))}).catch(err => {setError(err)}).finally(()=>{setLoading(false)});
+        }
     }
 
     return(
@@ -47,7 +57,7 @@ function ProductsList()
             <h1>Lista Produktów</h1>
         </Jumbotron>
         <InputGroup className="mb-3">
-            <FormControl placeholder="Wyszukaj produkt..." onChange={(e) => setSearch(e.target.value)}/>
+            <FormControl placeholder="Wyszukaj produkt..." onChange={onChangeSearch}/>
             <Button variant="primary" onClick={handleSearch} size="lg">Szukaj</Button>
         </InputGroup>
         <Col className =' mb-3 text-center'>

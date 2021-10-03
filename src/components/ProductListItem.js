@@ -11,8 +11,11 @@ function ProductListItem ({Item, onRemove})
     const history = useHistory();
 
     const handleAddProduct = () =>
-    {
-        axios.request({method: 'post', url: `/list/${Item.id}`}).then(response => {window.confirm("Produkt został dodany do listy zakupów.")}).catch(e => {window.confirm("Produkt jest już na liście zakupów.")})       
+    {   
+        if(window.confirm("Czy dodać produkt do listy?"))
+        {
+            axios.request({method: 'post', url: `/list/${Item.id}`}).then(response => {window.alert("Produkt został dodany do listy zakupów.")}).catch(e => {window.alert("Produkt jest już na liście zakupów.")})    
+        }
     }
 
     const handleEditProduct = () =>

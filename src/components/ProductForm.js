@@ -1,35 +1,35 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { Form, Button, Jumbotron, ButtonGroup } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import { useHistory, useParams, Redirect } from "react-router-dom";
+import { addProduct, updateProduct } from "../actions/productActions";
 import { GlobalContext } from "../context/GlobalState";
 import '../customStyle.css';
 //import useRequestRest from "../hooks/useRequestRest";
 
-function ProductFrom({history})
+function ProductFrom()
 {
     const {id} = useParams();
     const[product, setProduct] = useState(undefined);
     const[error, setError] = useState(undefined);
-    const [response, setResponse] = useState(undefined);
-    //const history = useHistory();
-    //const{getProduct} = useRequestRest();
+    const history = useHistory();
+    const dispatch = useDispatch();
 
-    const {addProduct, editProduct} = useContext(GlobalContext);
+    //const {addProduct, editProduct} = useContext(GlobalContext);
     const handleSubmit = (event) =>
     {
         event.preventDefault();
         if(id)
         {
-            axios.request({method: 'put', url: `/products/${id}`, data: product, headers: {  accept: 'application/json', 'Content-Type': 'application/json'}}).then(resp => {editProduct(product)}).catch((e) => {setError(e)});
+            axios.request({method: 'put', url: `/products/${id}`, data: product, headers: {  accept: 'application/json', 'Content-Type': 'application/json'}}).then(resp => {dispatch(updateProduct(product))}).catch((e) => {setError(e)});
         }
         else
         {
-            axios.request({method: 'post', url: '/products', data: product, headers: {  accept: 'application/json', 'Content-Type': 'application/json'}}).then(resp => {addProduct(resp.data)}).catch((e) => {setError(e)});
+            axios.request({method: 'post', url: '/products', data: product, headers: {  accept: 'application/json', 'Content-Type': 'application/json'}}).then(resp => {dispatch(addProduct(resp.data))}).catch((e) => {setError(e)});
         }
 
         history.push('/products');
-        //return (<Redirect to="/products" />  );
         
     }
 
