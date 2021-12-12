@@ -3,15 +3,19 @@ import { useEffect, useState } from 'react';
 import {Card, Button, Row, Col, InputGroup} from 'react-bootstrap'
 import '../customStyle.css';
 
-function ShoppingListItem ({Item, onRemove}) 
+function ShoppingListItem ({Item, onRemove, tagId}) 
 {
     const [checked, setChecked] = useState(Item.isBought);
     const [error, setError] = useState(undefined);
 
     function handleCheck(event)
     {
+        let apiUrl = `list/${Item.id}/${!checked}`;
+        if (tagId)
+            apiUrl = `list/${Item.id}/${!checked}?tagId=${tagId}`;
+
        setChecked(event.target.checked);
-       const result = axios.request({url: `list/${Item.id}/${!checked}`, method: 'put'}).catch(e => setError(e));
+       const result = axios.request({url: apiUrl, method: 'put'}).catch(e => setError(e));
     }
 
 

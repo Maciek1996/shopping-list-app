@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useState } from 'react';
-import {Card, Row, Col, Button, ButtonGroup} from 'react-bootstrap';
+import {Card, Row, Col, Button, ButtonGroup, DropdownButton, Dropdown} from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import '../customStyle.css';
 //import useRequestRest from '../hooks/useRequestRest';
@@ -9,12 +10,20 @@ function ProductListItem ({Item, onRemove})
 {
     const [error, setError] = useState(undefined);
     const history = useHistory();
+    const tags = useSelector(state => state.tags);
 
-    const handleAddProduct = () =>
-    {   
+    const handleAddProduct = (tagId) =>
+    {
         if(window.confirm("Czy dodać produkt do listy?"))
         {
-            axios.request({method: 'post', url: `/list/${Item.id}`}).then(response => {window.alert("Produkt został dodany do listy zakupów.")}).catch(e => {window.alert("Produkt jest już na liście zakupów.")})    
+            let apiUrl = `/list/${Item.id}`;
+            if (tagId)
+                apiUrl = `/list/${Item.id}?tagId=${tagId}`;
+                
+            axios.request({method: 'put', url:apiUrl})
+            .then(response => {window.alert("Produkt został dodany do listy zakupów.")})
+            .catch(e => {window.alert(e.response.data)})
+
         }
     }
 
@@ -35,8 +44,12 @@ function ProductListItem ({Item, onRemove})
                 </Col>
                 <Col>
                     <ButtonGroup bsPrefix={'input-right-group btn-group'}>
-                        <Button variant="success" onClick={() => handleAddProduct()}>Dodaj do listy</Button>
-                        <Button variant="primary" onClick={() => handleEditProduct()}>Edytuj</Button>
+                        <DropdownButton  as={ButtonGroup} title="Dodaj do listy" variant= "success">
+                            <Dropdown.Item onClick={handleAddProduct} >Domyślna lista</Dropdown.Item>
+                            {tags ? <Dropdown.Divider /> : null}
+                            {tags.map(t => <Dropdown.Item onClick={() => handleAddProduct(t.id)}>{t.tagName}</Dropdown.Item>)} 
+                        </DropdownButton>
+                        <Button variant="primary" onClick={handleEditProduct}>Edytuj</Button>
                         <Button variant="danger" onClick={()=>{onRemove(Item.id)}}>Usuń</Button>
                     </ButtonGroup>
                 </Col>

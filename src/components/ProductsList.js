@@ -26,7 +26,6 @@ function ProductsList()
             axios.request({url: `/products/${id}`, method: 'delete'});
             dispatch(deleteProduct(id));
         }
-
     }
 
     const handleSearch = (e) =>
@@ -61,11 +60,11 @@ function ProductsList()
             <Button variant="primary" onClick={handleSearch} size="lg">Szukaj</Button>
         </InputGroup>
         <Col className =' mb-3 text-center'>
-            <Button variant="success" onClick={() => handleAddNewProduct()} size="lg"> Dodaj nowy produkt </Button>
+            <Button variant="success" onClick={handleAddNewProduct} size="lg"> Dodaj nowy produkt </Button>
         </Col>
         <Row>
             {loading && !products.length ? 'Ładowanie...' : ''}
-            {products && products.map(p => <ProductListItem Item = {p} onRemove={handleRemove}/>)}
+            {products && products.map(product => <ProductListItem Item = {product} onRemove={handleRemove}/>)}
         </Row>
     </>);
 }

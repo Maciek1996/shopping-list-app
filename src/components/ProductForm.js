@@ -41,7 +41,6 @@ function ProductFrom()
     
 
     return(
-     
         <>
         <Jumbotron  className = "text-center" >
         <h1>{id ? 'Edytuj Produkt' : 'Stwórz Produkt'}</h1>

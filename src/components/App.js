@@ -11,19 +11,22 @@ import { useEffect, useState } from 'react';
 import { GlobalProvider } from '../context/GlobalState';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import {getProducts} from '../actions/productActions';
+import { setTags } from '../actions/tagActions';
+import TagsList from './TagsList';
+import TagForm from './TagForm';
 
-axios.defaults.baseURL = 'https://ShoppingList.somee.com/api'; //'http://localhost:51096/api'; 
+axios.defaults.baseURL = 'https://ShoppingList.somee.com/api'; //'http://localhost:51096/api'
 function App() 
 {
   const[productList, setProductList] = useState([]);
   const[error, setError] = useState(undefined); 
   const[loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
 
 
   useEffect(() =>
   {
-    //dispatch({type:'GET_PRODUCTS'})
-    //axios.request({url: '/list', method: 'get'}).then(response => {setProductList(response.data)}).catch(err => {setError(err)}).finally(()=>{setLoading(false)});
+    axios.request({url: '/tags', method: 'get'}).then(response => {dispatch(setTags(response.data))}).catch(err => {setError(err)}).finally(()=>{setLoading(false)});
   },[]);
 
   return (
@@ -33,11 +36,15 @@ function App()
         <Container >
           <Switch>
             <Route path="/" exact component = {ShoppingList}/>
-            <Route path="/list" component = {ShoppingList}/>
+            <Route path="/list" exact component = {ShoppingList}/>
+            <Route path="/list/:tagId" component = {ShoppingList}/>
             <Route path="/lists" component = {PreviousLists}/>
             <Route path="/products" exact component = {ProductsList}/>
             <Route path="/products/edit/:id" component = {ProductFrom}/>
             <Route path="/products/create" component = {ProductFrom}/>
+            <Route path="/tags" exact component = {TagsList}/>
+            <Route path="/tags/edit/:id" component={TagForm}/>
+            <Route path="/tags/create" component = {TagForm}/>
           </Switch>
         </Container>
       </Router>
