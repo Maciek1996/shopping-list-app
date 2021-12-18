@@ -45,7 +45,7 @@ function ProductListItem ({Item, onRemove})
                 <Col>
                     <ButtonGroup bsPrefix={'input-right-group btn-group'}>
                         <DropdownButton  as={ButtonGroup} title="Dodaj do listy" variant= "success">
-                            <Dropdown.Item onClick={handleAddProduct} >Domyślna lista</Dropdown.Item>
+                            <Dropdown.Item onClick={() => handleAddProduct(null)} >Domyślna lista</Dropdown.Item>
                             {tags ? <Dropdown.Divider /> : null}
                             {tags.map(t => <Dropdown.Item onClick={() => handleAddProduct(t.id)}>{t.tagName}</Dropdown.Item>)} 
                         </DropdownButton>
