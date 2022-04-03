@@ -33,6 +33,12 @@ function ProductFrom()
         
     }
 
+    const onValueChange = (event) =>
+    {
+        setProduct({...product, type: parseInt(event.target.value, 10)});
+        console.log(event.target.value)
+    }
+
     const onBack = () => { history.push('/products')}
     
     useEffect(() =>{        
@@ -53,6 +59,12 @@ function ProductFrom()
             <Form.Group className="mb-3" controlId="form.Textarea">
                 <Form.Label>Opis: </Form.Label>
                 <Form.Control as="textarea" rows={3} value = {product && product.description} onChange={e => setProduct({...product, description: e.target.value })}  />
+            </Form.Group>
+            <Form.Group>
+                <Form.Label>Sztuki / Waga: </Form.Label>
+                <Form.Check name="type" type = "radio" value = "0" checked = {product && product.type === 0} onChange = {onValueChange} label="brak"/>
+                <Form.Check name="type" type = "radio" value = "1" checked = {product && product.type === 1} onChange = {onValueChange} label="sztuki"/>
+                <Form.Check name="type" type = "radio" value = "2" checked = {product && product.type === 2} onChange = {onValueChange} label="waga"/>
             </Form.Group>
             <ButtonGroup bsPrefix={'input-left-group btn-group'}>
                 <Button variant="primary" type="submit" size="lg" >

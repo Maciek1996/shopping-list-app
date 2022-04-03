@@ -15,7 +15,7 @@ import { setTags } from '../actions/tagActions';
 import TagsList from './TagsList';
 import TagForm from './TagForm';
 
-axios.defaults.baseURL = 'https://ShoppingList.somee.com/api'; //'http://localhost:51096/api'
+axios.defaults.baseURL =  'https://ShoppingList.somee.com/api';  //'http://localhost:51096/api'
 function App() 
 {
   const[productList, setProductList] = useState([]);

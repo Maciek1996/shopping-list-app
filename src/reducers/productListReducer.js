@@ -5,7 +5,7 @@ export default function productListReducer (state = [], action)
         case 'SET_LIST':
             return action.payload;
         case 'DELETE_FROM_LIST':
-            return state.filter(product => product.id !== action.payload);
+            return state.filter(product => product.productId !== action.payload);
         default:
             return state;
     }

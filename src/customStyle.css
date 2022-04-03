@@ -19,6 +19,10 @@
     float: left;
 }
 
+.input-checkbox span {
+    padding: 0;
+}
+
 .input-right-group span
 {
     background-color: #fff;
@@ -29,4 +33,3 @@
     width: 2.3rem;
     height: 2.3rem;
   }
-  
