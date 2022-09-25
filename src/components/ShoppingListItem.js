@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import {Card, Button, Row, Col, InputGroup, FormControl} from 'react-bootstrap'
+import {Card, Button, Row, Col, InputGroup, FormControl, DropdownButton, Dropdown, ButtonGroup} from 'react-bootstrap'
 import '../customStyle.css';
 
 function ShoppingListItem ({Item, onRemove, tagId}) 
@@ -8,9 +8,15 @@ function ShoppingListItem ({Item, onRemove, tagId})
     const [checked, setChecked] = useState(Item.isBought);
     const [pieces, setPieces] = useState(Item.pieces);
     const [weight, setWeight] = useState(Item.weight);
+    //const [change, setChange] = useState(false);
     const [error, setError] = useState(undefined);
+    const [type, setType] = useState(Item.type);
+
+    const unitDictionary = {0:"brak", 1:"sztuki", 2:"waga"};
 
     const firstUpdate = useRef(true);
+    //const type = useRef(Item.type);
+
     useEffect(() =>{
         if (firstUpdate.current) {
             firstUpdate.current = false;
@@ -21,15 +27,15 @@ function ShoppingListItem ({Item, onRemove, tagId})
         if (tagId)
             apiUrl = `list/${Item.productId}/state?tagId=${tagId}&`;
 
-        if(Item.type === 1)
+        if(type == 1)
             apiUrl += `pieces=${pieces}`;
-        else if (Item.type === 2)
+        else if (type == 2)
             apiUrl += `weight=${weight}`;
 
-            console.log(apiUrl);
+            console.log(Item);
         const result = axios.request({url: apiUrl, method: 'put'}).catch(e => setError(e));
 
-    },[pieces, weight]);
+    },[pieces, wegiight]);
     function handleCheck(event)
     {
         let apiUrl = `list/${Item.productId}/state?isBought=${!checked}`;
@@ -91,6 +97,15 @@ function ShoppingListItem ({Item, onRemove, tagId})
         }
     }
 
+    function handleTypeChange(key)
+    {
+        const apiUrl = `list/${Item.productId}/state?type=${key}`;
+        //type.current = key;
+        const result = axios.request({url: apiUrl, method: 'put'}).catch(e => setError(e));
+        setType(key);
+        //setChange(!change);
+    }
+
     return(
         <Card className= {'card'}>
             <Card.Body>              
@@ -104,14 +119,14 @@ function ShoppingListItem ({Item, onRemove, tagId})
                     </Card.Text>
                 </Col>
                 <Col sm md lg/>
-                { Item.type === 2 ?
+                { type == 2 ?
                 <Col md = {{span: "auto"}} sm = {{span:"auto"}} xs = {{span:"auto"}}>
                     <InputGroup>
                         <FormControl type="text" style = {{width: '60px'}} disabled={checked} value = {weight} onChange={handleWeightChange}/>
                         <InputGroup.Text>{Item.unit}</InputGroup.Text>
                     </InputGroup>
-                </Col> : null}
-                { Item.type === 1 ?
+                </Col> : ''}
+                { type == 1 ?
                 <Col md = {{span: "auto"}} sm = {{span:"auto"}} xs = {{span:"auto"}}>
                     <InputGroup>
                         <Button variant="outline-secondary" id="button-increase" disabled={checked} onClick = {handleButtonClick}>
@@ -122,10 +137,15 @@ function ShoppingListItem ({Item, onRemove, tagId})
                             <b>-</b>
                         </Button>
                     </InputGroup>
-                </Col> : null}
+                </Col> : ''}
                 <Col md={{ span: "auto"}} sm={{span:"auto"}} xs ={{span:"auto"}}>
                     <InputGroup className={'input-checkbox'}>
-                        <Button variant='danger' disabled={checked} onClick={() => onRemove(Item.productId)}>Usuń z listy</Button>
+                        <ButtonGroup>
+                            <Button variant='danger' disabled={checked} onClick={() => onRemove(Item.productId)}>Usuń z listy</Button>
+                            <DropdownButton title={unitDictionary[type]} as={ButtonGroup} disabled={checked}>
+                                {Object.entries(unitDictionary).map(([key,value]) => <Dropdown.Item onClick={()=>handleTypeChange(key)}>{value}</Dropdown.Item>)}
+                            </DropdownButton>
+                        </ButtonGroup>
                         <InputGroup.Checkbox checked={checked} onChange={handleCheck} className = {'checkbox-lg'}/>
                     </InputGroup>
                 </Col>

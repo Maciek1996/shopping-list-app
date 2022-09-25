@@ -13,6 +13,7 @@ function ProductFrom()
     const {id} = useParams();
     const[product, setProduct] = useState(undefined);
     const[error, setError] = useState(undefined);
+    const[originalValue, setOriginalValue] = useState(undefined);
     const history = useHistory();
     const dispatch = useDispatch();
 
@@ -22,7 +23,21 @@ function ProductFrom()
         event.preventDefault();
         if(id)
         {
-            axios.request({method: 'put', url: `/products/${id}`, data: product, headers: {  accept: 'application/json', 'Content-Type': 'application/json'}}).then(resp => {dispatch(updateProduct(product))}).catch((e) => {setError(e)});
+            if(originalValue !== product.type)
+            {
+                if(window.confirm("Czy chcesz zmienić typ miary produktu dla wszystkich list?"))
+                {
+                    axios.request({method: 'put', url: `/products/${id}?changeForAll=true`, data: product, headers: {  accept: 'application/json', 'Content-Type': 'application/json'}}).then(resp => {dispatch(updateProduct(product))}).catch((e) => {setError(e)});
+                }
+                else
+                {
+                    axios.request({method: 'put', url: `/products/${id}?changeForAll=false`, data: product, headers: {  accept: 'application/json', 'Content-Type': 'application/json'}}).then(resp => {dispatch(updateProduct(product))}).catch((e) => {setError(e)});
+                }
+            }
+            else
+            {
+                axios.request({method: 'put', url: `/products/${id}`, data: product, headers: {  accept: 'application/json', 'Content-Type': 'application/json'}}).then(resp => {dispatch(updateProduct(product))}).catch((e) => {setError(e)});
+            }
         }
         else
         {
@@ -36,13 +51,12 @@ function ProductFrom()
     const onValueChange = (event) =>
     {
         setProduct({...product, type: parseInt(event.target.value, 10)});
-        console.log(event.target.value)
     }
 
     const onBack = () => { history.push('/products')}
     
     useEffect(() =>{        
-        id && axios.request({method: 'get', url: `/products/${id}`}).then(response => {setProduct(response.data)});
+        id && axios.request({method: 'get', url: `/products/${id}`}).then(response => {setProduct(response.data); setOriginalValue(response.data.type)});
     },[])
     
 

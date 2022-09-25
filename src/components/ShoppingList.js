@@ -24,7 +24,6 @@ const ShoppingList = ()  =>
         }
         else
             axios.request({url: '/list', method: 'get'}).then(response => {dispatch(setList(response.data))}).catch(err => {setError(err)}).finally(()=>{setLoading(false)});
-
     },[]);
 
     const handleAddNewList = async () =>
