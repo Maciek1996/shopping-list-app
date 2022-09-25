@@ -35,7 +35,7 @@ function ShoppingListItem ({Item, onRemove, tagId})
             console.log(Item);
         const result = axios.request({url: apiUrl, method: 'put'}).catch(e => setError(e));
 
-    },[pieces, wegiight]);
+    },[pieces, weight]);
     function handleCheck(event)
     {
         let apiUrl = `list/${Item.productId}/state?isBought=${!checked}`;
